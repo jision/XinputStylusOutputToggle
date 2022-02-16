@@ -8,11 +8,11 @@ import subprocess
 
 
 # This is python script to toggle DrawingTablet
-
+displayList = []
+# list display devices in the system
 def getdisplay():
     get_monitors = subprocess.Popen("xrandr --listmonitors", shell=True, stdout=subprocess.PIPE)
     monitors_list = get_monitors.stdout.readlines()
-    displayList = []
     if len(monitors_list) > 0:
         monitors_list.pop(0)
         for x in monitors_list:
@@ -30,6 +30,7 @@ def getdisplay():
 
 def toggle(display_selected):
     print(display_selected)
+    print(displayList)
     get_tablet = subprocess.Popen("xsetwacom --list", shell=True, stdout=subprocess.PIPE)
     the_tablet = get_tablet.stdout.read()
     the_tablet = str(the_tablet).replace("b'", '')
@@ -68,7 +69,7 @@ def switch(head, display):
     if display is None:
         print('Display set as None !!! returning ...')
         return 0
-    cmd = 'xsetwacom set "' + head + '" MapToOutput ' + display
+    cmd = 'xsetwacom set "' + head + '" MapToOutput HEAD-' + str(displayList.index(display))
     os.system(cmd)
     print(cmd)
 
